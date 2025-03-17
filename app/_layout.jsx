@@ -2,7 +2,6 @@ import {
   DarkTheme,
   DefaultTheme,
   NavigationContainer,
-  ThemeProvider,
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
@@ -14,6 +13,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Tabs } from "expo-router"; // import za tab layout
 import { RecipesScreen } from "./recipes.jsx";
+import { ThemeProvider } from "@/utils/ThemeProvider.js";
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 
 SplashScreen.preventAutoHideAsync();
@@ -36,7 +36,7 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+    <ThemeProvider>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       </Stack>

@@ -2,9 +2,12 @@ import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import React from "react";
 import { Colors } from "@/constants/Colors";
 import { useRouter } from "expo-router";
+import { createThemedStyles, useTheme } from "@/utils/ThemeProvider";
 
 export default function Login() {
   const router = useRouter();
+  const { dark, colors, setScheme } = useTheme();
+  const styles = useStyles();
   return (
     <View style={{ width: "100%" }}>
       <Text
@@ -60,29 +63,31 @@ export default function Login() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: Colors.WHITE,
-    height: "100%",
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    padding: 25,
-  },
-  signInButton: {
-    borderRadius: 25,
-    padding: 15,
-    marginTop: 10,
-  },
-  signInButtonText: {
-    color: Colors.light.text,
-    textAlign: "center",
-    fontFamily: "OutfitBold",
-    fontSize: 16,
-  },
-  button: {
-    padding: 15,
-    backgroundColor: Colors.light.tint,
-    borderRadius: 10,
-    marginTop: "5%",
-  },
-});
+const useStyles = createThemedStyles((theme, isDark) =>
+  StyleSheet.create({
+    container: {
+      backgroundColor: theme.background,
+      height: "100%",
+      borderTopLeftRadius: 30,
+      borderTopRightRadius: 30,
+      padding: 25,
+    },
+    signInButton: {
+      borderRadius: 25,
+      padding: 15,
+      marginTop: 10,
+    },
+    signInButtonText: {
+      color: Colors.light.text,
+      textAlign: "center",
+      fontFamily: "OutfitBold",
+      fontSize: 16,
+    },
+    button: {
+      padding: 15,
+      backgroundColor: Colors.light.tint,
+      borderRadius: 10,
+      marginTop: "5%",
+    },
+  })
+);
