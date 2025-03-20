@@ -11,12 +11,14 @@ import {
   Platform,
   Appearance,
 } from "react-native";
+import { useRouter } from "expo-router";
 import { SearchBar } from "react-native-elements";
 import { Colors } from "@/constants/Colors";
 import Background from "@/assets/images/background.jpg";
 import { TextInput } from "react-native-gesture-handler";
 
 export default function HomeScreen() {
+  const router = useRouter();
   const colorScheme = Appearance.getColorScheme();
   const theme = colorScheme === "dark" ? Colors.dark : Colors.light;
   const [search, setSearch] = useState("");
@@ -67,10 +69,14 @@ export default function HomeScreen() {
           <Image
             source={require("@/assets/images/list.jpg")}
             style={{ width: width, height: height * 0.6, marginTop: 10 }}
-            resizeMode="contain "
+            resizeMode="cover"
           />
         </View>
-        <Pressable style={[styles.mainButton, pressed && styles.buttonPressed]}>
+
+        <Pressable
+          style={[styles.mainButton, pressed && styles.buttonPressed]}
+          onPress={() => router.push("/recipes")}
+        >
           <Text style={styles.mainButtonText}>Give me recipe!</Text>
         </Pressable>
       </View>
@@ -92,6 +98,7 @@ const styles = StyleSheet.create({
     marginHorizontal: "auto",
     fontSize: 28,
     fontWeight: 700,
+    color: Colors.PURPLE,
   },
   //  searchBar : {
   //   backgroundColor : '#fff'
@@ -126,7 +133,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   mealButton: {
-    backgroundColor: "#dedddc",
+    backgroundColor: Colors.PURPLE,
     width: 100,
     height: 50,
     borderRadius: 20,
@@ -136,7 +143,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   mealButtonText: {
-    color: "white",
+    color: Colors.YELLOW,
     fontSize: 18,
   },
   mainButton: {
@@ -145,17 +152,18 @@ const styles = StyleSheet.create({
     width: 400,
     height: 50,
     borderRadius: 20,
-    backgroundColor: "#dedddc",
+    backgroundColor: Colors.TURQUOISE,
     padding: 10,
     justifyContent: "center",
     alignItems: "center",
   },
   mainButtonText: {
-    color: "white",
+    color: Colors.PURPLE,
     fontSize: 22,
     fontWeight: 600,
   },
   buttonPressed: {
-    backgroundColor: "#0AA296",
+    backgroundColor: Colors.YELLOW,
+    color: Colors.PURPLE,
   },
 });
