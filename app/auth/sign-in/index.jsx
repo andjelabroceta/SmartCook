@@ -5,6 +5,7 @@ import {
   TextInput,
   SafeAreaView,
   ActivityIndicator,
+  ImageBackground,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useNavigation, useRouter } from "expo-router";
@@ -54,59 +55,65 @@ export default function SignIn() {
   };
 
   return (
-    <SafeAreaView style={styles.content}>
-      <TouchableOpacity onPress={() => router.back()}>
-        <Ionicons name="arrow-back" size={24} color="black" />
-      </TouchableOpacity>
-
-      <View style={styles.headerContainer}>
-        <Text style={styles.headerText}>Let's Sign You In</Text>
-        <Text style={styles.subHeaderText}>Welcome Back</Text>
-        <Text style={styles.subHeaderText}>You've been missed</Text>
-      </View>
-
-      <View style={styles.formContainer}>
-        <View style={styles.inputContainer}>
-          <Text style={styles.inputLabel}>Email</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter Email"
-            placeholderTextColor="#a0a0a0"
-            keyboardType="email-address"
-            autoCapitalize="none"
-            onChangeText={(val) => setEmail(val)}
-          />
-        </View>
-
-        <View style={styles.inputContainer}>
-          <Text style={styles.inputLabel}>Password</Text>
-          <TextInput
-            secureTextEntry={true}
-            style={styles.input}
-            placeholder="Enter Password"
-            placeholderTextColor="#a0a0a0"
-            onChangeText={(val) => setPassword(val)}
-          />
-        </View>
-
-        {loading ? (
-          <ActivityIndicator color={Colors.PRIMARY}></ActivityIndicator>
-        ) : (
-          <TouchableOpacity
-            style={styles.signInButton}
-            onPress={OnCreateAccount}
-          >
-            <Text style={styles.signInButtonText}>Sign In</Text>
-          </TouchableOpacity>
-        )}
-
-        <TouchableOpacity
-          style={styles.createAccountButton}
-          onPress={() => router.replace("auth/sign-up")}
-        >
-          <Text style={styles.createAccountButtonText}>Create account</Text>
+    <SafeAreaView style={styles.container}>
+      <ImageBackground
+        source={require("../../../assets/images/pancakes.jpeg")}
+        resizeMode="cover"
+        style={styles.imageContainer}
+      >
+        <TouchableOpacity onPress={() => router.back()}>
+          <Ionicons name="arrow-back" size={24} color="#720058" />
         </TouchableOpacity>
-      </View>
+
+        <View style={styles.headerContainer}>
+          <Text style={styles.headerText}>Let's Sign You In</Text>
+          <Text style={styles.subHeaderText}>Welcome Back</Text>
+          <Text style={styles.subHeaderText}>You've been missed</Text>
+        </View>
+
+        <View style={styles.formContainer}>
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>Email</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter Email"
+              placeholderTextColor="#a0a0a0"
+              keyboardType="email-address"
+              autoCapitalize="none"
+              onChangeText={(val) => setEmail(val)}
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>Password</Text>
+            <TextInput
+              secureTextEntry={true}
+              style={styles.input}
+              placeholder="Enter Password"
+              placeholderTextColor="#a0a0a0"
+              onChangeText={(val) => setPassword(val)}
+            />
+          </View>
+
+          {loading ? (
+            <ActivityIndicator color={Colors.PRIMARY}></ActivityIndicator>
+          ) : (
+            <TouchableOpacity
+              style={styles.signInButton}
+              onPress={OnCreateAccount}
+            >
+              <Text style={styles.signInButtonText}>Sign In</Text>
+            </TouchableOpacity>
+          )}
+
+          <TouchableOpacity
+            style={styles.createAccountButton}
+            onPress={() => router.replace("auth/sign-up")}
+          >
+            <Text style={styles.createAccountButtonText}>Create account</Text>
+          </TouchableOpacity>
+        </View>
+      </ImageBackground>
     </SafeAreaView>
   );
 }
@@ -114,64 +121,70 @@ export default function SignIn() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: Colors.TURQUOISE,
   },
-  content: {
-    padding: 25,
+  imageContainer: {
     flex: 1,
-    justifyContent: "center",
   },
   backButton: {
     position: "absolute",
-    top: 50,
+    marginTop: 20,
     left: 25,
   },
   headerContainer: {
-    marginBottom: 40,
+    marginTop: 20,
   },
   headerText: {
     fontFamily: "OutfitBold",
     fontSize: 32,
-    marginBottom: 10,
     marginTop: 10,
+    marginLeft: 10,
+    color: Colors.PURPLE,
   },
   subHeaderText: {
     fontFamily: "Outfit",
     fontSize: 18,
+    marginTop: 10,
+    marginLeft: 10,
+    color: Colors.YELLOW,
   },
   formContainer: {
     borderRadius: 10,
-    padding: 0,
-    marginTop: 20,
+    padding: 60,
+    marginTop: 150,
   },
   inputContainer: {
-    marginBottom: 20,
+    marginBottom: 10,
   },
   inputLabel: {
     fontFamily: "Outfit",
     marginBottom: 5,
+    color: Colors.PURPLE,
+    fontWeight: "bold",
   },
   input: {
     padding: 15,
-    borderRadius: 10,
+    borderRadius: 15,
     fontFamily: "Outfit",
-    borderColor: Colors.GRAY,
+    borderColor: Colors.PURPLE,
     borderWidth: 1,
+    backgroundColor: "white",
   },
   signInButton: {
-    backgroundColor: Colors.light.tint,
-    borderRadius: 10,
+    backgroundColor: Colors.YELLOW,
+    borderRadius: 15,
     padding: 15,
     marginTop: 20,
   },
   signInButtonText: {
-    color: "white",
+    color: Colors.PURPLE,
     textAlign: "center",
     fontFamily: "OutfitBold",
     fontSize: 16,
   },
   createAccountButton: {
-    borderWidth: 1,
-    borderRadius: 10,
+    backgroundColor: Colors.PURPLE,
+    borderRadius: 15,
     padding: 15,
     marginTop: 15,
   },
@@ -179,5 +192,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontFamily: "Outfit",
     fontSize: 16,
+    color: Colors.YELLOW,
   },
 });
