@@ -1,4 +1,13 @@
-import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  ImageBackground,
+  SafeAreaView,
+  Dimensions,
+} from "react-native";
 import React from "react";
 import { Colors } from "@/constants/Colors";
 import { useRouter } from "expo-router";
@@ -7,87 +16,93 @@ import { createThemedStyles, useTheme } from "@/utils/ThemeProvider";
 export default function Login() {
   const router = useRouter();
   const { dark, colors, setScheme } = useTheme();
-  const styles = useStyles();
+  const { width } = Dimensions.get("window"); // sirina ekrana
+  // const styles = useStyles();
   return (
-    <View style={{ width: "100%" }}>
-      <Text
-        style={{
-          fontSize: 30,
-          fontFamily: "OutfitBold",
-          textAlign: "center",
-          marginTop: "20%",
-          marginBottom: 20,
-        }}
-      >
-        Logo
-      </Text>
+    <SafeAreaView style={styles.container}>
       <Image
-        source={require("@/assets/images/adaptive-icon.png")}
-        style={{ width: "100%", height: 400 }}
+        source={require("../../assets/illustrations/logo3.png")}
+        style={{ width: width }}
+        resizeMode="contain"
       />
-      <View style={styles.container}>
-        <Text
-          style={{
-            fontSize: 30,
-            fontFamily: "OutfitBold",
-            textAlign: "center",
-            marginTop: 10,
-          }}
-        >
-          You give us ingredients We give you best recipes
-        </Text>
-
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => router.push("./auth/sign-in")}
-        >
-          <Text
-            style={{
-              color: Colors.light.background,
-              textAlign: "center",
-              fontFamily: "OutfitBold",
-              fontSize: 16,
-            }}
+      <ImageBackground
+        source={require("../../assets/images/food1.jpeg")}
+        resizeMode="cover"
+        style={styles.imageContainer}
+      >
+        <View style={styles.centralParentContainer}>
+          <View style={styles.headerContainer}>
+            <Text style={styles.headerText}>Cook smarter than ever!</Text>
+          </View>
+          <TouchableOpacity
+            style={styles.startButton}
+            onPress={() => router.push("./auth/sign-in")}
           >
-            Let's start
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.signInButton}
-          onPress={() => router.push("./auth/sign-up")}
-        >
-          <Text style={styles.signInButtonText}>Create new account</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+            <Text style={styles.startButtonText}>Log in</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.signInButton}
+            onPress={() => router.push("./auth/sign-up")}
+          >
+            <Text style={styles.signInButtonText}>Sign up</Text>
+          </TouchableOpacity>
+        </View>
+      </ImageBackground>
+    </SafeAreaView>
   );
 }
 
-const useStyles = createThemedStyles((theme, isDark) =>
-  StyleSheet.create({
-    container: {
-      backgroundColor: theme.background,
-      height: "100%",
-      borderTopLeftRadius: 30,
-      borderTopRightRadius: 30,
-      padding: 25,
-    },
-    signInButton: {
-      borderRadius: 25,
-      padding: 15,
-      marginTop: 10,
-    },
-    signInButtonText: {
-      color: Colors.light.text,
-      textAlign: "center",
-      fontFamily: "OutfitBold",
-      fontSize: 16,
-    },
-    button: {
-      padding: 15,
-      backgroundColor: Colors.light.tint,
-      borderRadius: 10,
-      marginTop: "5%",
-    },
-  })
-);
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: Colors.TURQUOISE,
+  },
+  imageContainer: {
+    flex: 1,
+  },
+  centralParentContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  headerContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    //borderRadius: 60,
+    backgroundColor: Colors.PURPLE,
+    opacity: 0.8,
+  },
+  headerText: {
+    fontSize: 26,
+    fontFamily: "OutfitBold",
+    textAlign: "center",
+    margin: 20,
+    color: Colors.YELLOW,
+    opacity: 1,
+  },
+  startButton: {
+    padding: 15,
+    backgroundColor: Colors.YELLOW,
+    borderRadius: 10,
+    marginTop: 10,
+  },
+  startButtonText: {
+    color: Colors.PURPLE,
+    textAlign: "center",
+    fontFamily: "OutfitBold",
+    fontSize: 24,
+  },
+  signInButton: {
+    borderRadius: 10,
+    padding: 15,
+    backgroundColor: Colors.PURPLE,
+    marginTop: 10,
+  },
+  signInButtonText: {
+    color: Colors.YELLOW,
+    textAlign: "center",
+    fontFamily: "OutfitBold",
+    fontSize: 24,
+  },
+});
