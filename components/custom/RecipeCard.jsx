@@ -2,6 +2,7 @@ import { View, Text, Image, StyleSheet, Platform } from "react-native";
 import { Colors } from "@/constants/Colors";
 import React from "react";
 import { Ionicons } from "@expo/vector-icons";
+import { Pressable } from "react-native-gesture-handler";
 
 const RecipeCard = () => {
   return (

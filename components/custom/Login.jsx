@@ -86,23 +86,25 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.YELLOW,
     borderRadius: 10,
     marginTop: 10,
+    width: 300,
   },
   startButtonText: {
     color: Colors.PURPLE,
     textAlign: "center",
     fontFamily: "OutfitBold",
-    fontSize: 24,
+    fontSize: 18,
   },
   signInButton: {
     borderRadius: 10,
     padding: 15,
     backgroundColor: Colors.PURPLE,
     marginTop: 10,
+    width: 300,
   },
   signInButtonText: {
     color: Colors.YELLOW,
     textAlign: "center",
     fontFamily: "OutfitBold",
-    fontSize: 24,
+    fontSize: 18,
   },
 });

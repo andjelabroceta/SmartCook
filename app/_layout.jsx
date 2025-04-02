@@ -38,8 +38,9 @@ export default function RootLayout() {
   return (
     <ThemeProvider>
       <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack Screen name="recipes" options={{ headerShown: false }} />
+        <Stack.Screen name="(tabs)" />
+        <Stack Screen name="recipes" />
+        <Stack.Screen name="recipes/[id]" />
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>

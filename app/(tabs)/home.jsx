@@ -22,8 +22,8 @@ export default function HomeScreen() {
   const colorScheme = Appearance.getColorScheme();
   const theme = colorScheme === "dark" ? Colors.dark : Colors.light;
   const [search, setSearch] = useState("");
-  const { width, height } = Dimensions.get("window"); //za uklapanje slike u ekran
-  const [pressed, setPressed] = useState(false); //aktivnost dugmadi
+  const { width, height } = Dimensions.get("window");
+  const [pressed, setPressed] = useState(false);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>

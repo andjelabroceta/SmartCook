@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
     color: Colors.PURPLE,
     textAlign: "center",
     fontFamily: "OutfitBold",
-    fontSize: 16,
+    fontSize: 18,
   },
   createAccountButton: {
     backgroundColor: Colors.PURPLE,
@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
   createAccountButtonText: {
     textAlign: "center",
     fontFamily: "Outfit",
-    fontSize: 16,
+    fontSize: 18,
     color: Colors.YELLOW,
   },
 });
