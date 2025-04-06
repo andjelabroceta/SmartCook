@@ -15,8 +15,13 @@ import axios from "axios";
 import { FlatList } from "react-native";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { useLocalSearchParams } from "expo-router";
 
-const Recipes = () => {
+const Recipes = (route) => {
+  const params = useLocalSearchParams();
+  const ingredients = params.ingredients ? JSON.parse(params.ingredients) : [];
+  const ingredientsLower = ingredients.map((item) => item.toLowerCase());
+  console.log(ingredientsLower);
   const { width } = Dimensions.get("window");
   const [recipes, setRecipes] = useState([]);
   const router = useRouter();
@@ -28,7 +33,7 @@ const Recipes = () => {
   const fetchRecipes = async () => {
     try {
       const response = await axios.post(API_URL, {
-        ingredients: ["potato", "chicken"], // primjer podataka
+        ingredients: ingredientsLower,
       });
       setRecipes(response.data);
     } catch (error) {

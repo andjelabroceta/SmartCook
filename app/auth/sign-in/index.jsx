@@ -140,13 +140,14 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginLeft: 10,
     color: Colors.PURPLE,
+    fontWeight: "bold",
   },
   subHeaderText: {
     fontFamily: "Outfit",
     fontSize: 18,
     marginTop: 10,
     marginLeft: 10,
-    color: Colors.YELLOW,
+    color: Colors.PURPLE,
   },
   formContainer: {
     borderRadius: 10,

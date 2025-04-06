@@ -16,7 +16,7 @@ import { createThemedStyles, useTheme } from "@/utils/ThemeProvider";
 export default function Login() {
   const router = useRouter();
   const { dark, colors, setScheme } = useTheme();
-  const { width } = Dimensions.get("window"); // sirina ekrana
+  const { width } = Dimensions.get("window");
   // const styles = useStyles();
   return (
     <SafeAreaView style={styles.container}>

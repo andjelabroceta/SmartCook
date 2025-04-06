@@ -6,17 +6,18 @@
 const tintColorLight = "#0a7ea4";
 const tintColorDark = "#fff";
 const turquoise = "#40E0D0";
-const grey = "#e6e6fa";
 const darkGrey = "#474747";
 const yellow = "#f2af29";
 const darkPurple = "#720058";
 const orange = "#ff674d";
+const grey = "#d9d9d9";
 
 export const Colors = {
   TURQUOISE: turquoise,
   PURPLE: darkPurple,
   ORANGE: orange,
   YELLOW: yellow,
+  GREY: grey,
   light: {
     text: "#11181C",
     background: "#fff",
