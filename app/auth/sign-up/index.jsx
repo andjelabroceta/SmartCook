@@ -16,6 +16,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 // import { createUserWithEmailAndPassword } from "firebase/auth";
 // import { FIREBASE_AUTH } from "../../../config/FirebaseConfig";
 import { NotifyMessage } from "../../../utils/utils";
+import { signUp } from "@/hooks/auth";
 
 export default function SignUp() {
   const navigation = useNavigation();
@@ -30,28 +31,74 @@ export default function SignUp() {
   const [password, setPassword] = useState();
   const [fullName, setFullName] = useState();
   const [loading, setLoading] = useState();
+  const [errors, setErrors] = useState({
+    password: "",
+    email: "",
+    fullName: "",
+  });
 
-  //   const auth = FIREBASE_AUTH;
+  const validateUsername = (val) => {
+    setFullName(val);
+    let errorMessage = "";
+    if (!val) {
+      errorMessage = "Full name is required!";
+    } else if (val.length > 30) {
+      errorMessage = "Full name must be below 30 characters!";
+    }
+    setErrors((prev) => ({ ...prev, fullName: errorMessage }));
+    return errorMessage;
+  };
+  const validatePassword = (val) => {
+    setPassword(val);
+    let errorMessage = "";
+    if (!val) {
+      errorMessage = "Password is required!";
+    } else if (val.length < 6) {
+      errorMessage = "Password must be at least 6 characters!";
+    }
+    setErrors((prev) => ({ ...prev, password: errorMessage }));
+    return errorMessage;
+  };
+  const validateEmail = (val) => {
+    setEmail(val);
+    let errorMessage = "";
+    if (!val) {
+      errorMessage = "Email is required!";
+    } else if (
+      !String(val)
+        .toLowerCase()
+        .match(
+          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        )
+    ) {
+      errorMessage = "Email is invalid!";
+    }
+    setErrors((prev) => ({ ...prev, email: errorMessage }));
+    return errorMessage;
+  };
 
   const OnCreateAccount = () => {
-    // if (!email || !password || !fullName) {
-    //   NotifyMessage("Please fill all the fields!");
-    //   return;
-    // }
-    // setLoading(true);
-    // createUserWithEmailAndPassword(auth, email, password)
-    //   .then((userCredential) => {
-    //     const user = userCredential.user;
-    //     console.log(user);
-    router.replace("/home");
-    //   })
-    //   .catch((error) => {
-    //     console.log(error.message, error.code);
-    //     NotifyMessage("Error: " + error.message);
-    //   })
-    //   .finally(() => {
-    //     setLoading(false);
-    //   });
+    let emailError = validateEmail(email);
+    let passError = validatePassword(password);
+    let nameError = validateUsername(fullName);
+    if (emailError || passError || nameError) {
+      NotifyMessage("Please fill all the fields!");
+      return;
+    }
+    setLoading(true);
+    signUp(email, password, fullName)
+      .then((userResponse) => {
+        console.log(userResponse);
+        NotifyMessage("Success: Please check your email!");
+        // router.replace("/home");
+      })
+      .catch((error) => {
+        // console.log(error.message, error.code);
+        NotifyMessage("Error: " + error.message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   return (
@@ -76,8 +123,11 @@ export default function SignUp() {
               style={styles.input}
               placeholder="Enter Full Name"
               placeholderTextColor="#a0a0a0"
-              onChangeText={(val) => setFullName(val)}
+              onChangeText={(val) => validateUsername(val)}
             />
+            {errors.fullName && (
+              <Text style={styles.errorText}>{errors.fullName}</Text>
+            )}
           </View>
 
           <View style={styles.inputContainer}>
@@ -88,8 +138,11 @@ export default function SignUp() {
               placeholderTextColor="#a0a0a0"
               keyboardType="email-address"
               autoCapitalize="none"
-              onChangeText={(val) => setEmail(val)}
+              onChangeText={(val) => validateEmail(val)}
             />
+            {errors.email && (
+              <Text style={styles.errorText}>{errors.email}</Text>
+            )}
           </View>
 
           <View style={styles.inputContainer}>
@@ -99,8 +152,11 @@ export default function SignUp() {
               style={styles.input}
               placeholder="Enter Password"
               placeholderTextColor="#a0a0a0"
-              onChangeText={(val) => setPassword(val)}
+              onChangeText={(val) => validatePassword(val)}
             />
+            {errors.password && (
+              <Text style={styles.errorText}>{errors.password}</Text>
+            )}
           </View>
 
           {loading ? (
@@ -178,6 +234,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.PURPLE,
     borderWidth: 1,
     backgroundColor: "white",
+    zIndex: 10,
   },
   signInButton: {
     backgroundColor: Colors.YELLOW,
@@ -202,5 +259,20 @@ const styles = StyleSheet.create({
     fontFamily: "Outfit",
     fontSize: 16,
     color: Colors.YELLOW,
+  },
+  errorText: {
+    borderColor: Colors.PURPLE,
+    borderWidth: 1,
+    borderTopWidth: 0,
+    padding: 2,
+    fontSize: 13,
+    paddingTop: 20,
+    marginTop: -20,
+    zIndex: 1,
+    color: "#990000",
+    backgroundColor: "white",
+    borderBottomLeftRadius: 15,
+    borderBottomRightRadius: 15,
+    paddingStart: 10,
   },
 });
