@@ -140,13 +140,14 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginLeft: 10,
     color: Colors.PURPLE,
+    fontWeight: "bold",
   },
   subHeaderText: {
     fontFamily: "Outfit",
     fontSize: 18,
     marginTop: 10,
     marginLeft: 10,
-    color: Colors.YELLOW,
+    color: Colors.PURPLE,
   },
   formContainer: {
     borderRadius: 10,
@@ -180,7 +181,7 @@ const styles = StyleSheet.create({
     color: Colors.PURPLE,
     textAlign: "center",
     fontFamily: "OutfitBold",
-    fontSize: 16,
+    fontSize: 18,
   },
   createAccountButton: {
     backgroundColor: Colors.PURPLE,
@@ -191,7 +192,7 @@ const styles = StyleSheet.create({
   createAccountButtonText: {
     textAlign: "center",
     fontFamily: "Outfit",
-    fontSize: 16,
+    fontSize: 18,
     color: Colors.YELLOW,
   },
 });
