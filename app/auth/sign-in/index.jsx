@@ -120,7 +120,7 @@ export default function SignIn() {
               placeholderTextColor="#a0a0a0"
               keyboardType="email-address"
               autoCapitalize="none"
-              onChangeText={(val) => setEmail(val)}
+              onChangeText={(val) => validateEmail(val)}
             />
             {errors.email && (
               <Text style={styles.errorText}>{errors.email}</Text>
@@ -134,7 +134,7 @@ export default function SignIn() {
               style={styles.input}
               placeholder="Enter Password"
               placeholderTextColor="#a0a0a0"
-              onChangeText={(val) => setPassword(val)}
+              onChangeText={(val) => validatePassword(val)}
             />
             {errors.password && (
               <Text style={styles.errorText}>{errors.password}</Text>
