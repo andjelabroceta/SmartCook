@@ -110,11 +110,13 @@ export default function SignUp() {
         resizeMode="cover"
         style={styles.imageContainer}
       >
-        <TouchableOpacity onPress={() => router.back()}>
-          <Ionicons name="arrow-back" size={24} color="#720058" />
-        </TouchableOpacity>
+        <View style={styles.headerContainer}>
+          <TouchableOpacity onPress={() => router.back()}>
+            <Ionicons name="arrow-back" size={24} color="#720058" />
+          </TouchableOpacity>
 
-        <Text style={styles.headerText}>Create New Account</Text>
+          <Text style={styles.headerText}>Create New Account</Text>
+        </View>
 
         <View style={styles.formContainer}>
           <View style={styles.inputContainer}>
@@ -197,6 +199,8 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     marginTop: 20,
+    paddingHorizontal: 50,
+    paddingTop: "10%",
   },
   headerText: {
     fontFamily: "OutfitBold",
@@ -216,7 +220,7 @@ const styles = StyleSheet.create({
   formContainer: {
     borderRadius: 10,
     padding: 60,
-    marginTop: 150,
+    marginTop: 20,
   },
   inputContainer: {
     marginBottom: 10,

@@ -6,6 +6,8 @@ import {
   SafeAreaView,
   ActivityIndicator,
   ImageBackground,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useNavigation, useRouter } from "expo-router";
@@ -95,20 +97,22 @@ export default function SignIn() {
   };
 
   return (
+    // <KeyboardAvoidingView
+    //   behavior={Platform.OS === "ios" ? "padding" : "height"}
+    //   style={{ flex: 1 }}
+    // >
     <SafeAreaView style={styles.container}>
       <ImageBackground
         source={require("../../../assets/images/pancakes.jpeg")}
         resizeMode="cover"
         style={styles.imageContainer}
       >
-        <TouchableOpacity onPress={() => router.back()}>
-          <Ionicons name="arrow-back" size={24} color="#720058" />
-        </TouchableOpacity>
-
         <View style={styles.headerContainer}>
+          <TouchableOpacity onPress={() => router.back()}>
+            <Ionicons name="arrow-back" size={24} color="#720058" />
+          </TouchableOpacity>
           <Text style={styles.headerText}>Let's Sign You In</Text>
           <Text style={styles.subHeaderText}>Welcome Back</Text>
-          <Text style={styles.subHeaderText}>You've been missed</Text>
         </View>
 
         <View style={styles.formContainer}>
@@ -161,6 +165,7 @@ export default function SignIn() {
         </View>
       </ImageBackground>
     </SafeAreaView>
+    // </KeyboardAvoidingView>
   );
 }
 
@@ -178,7 +183,9 @@ const styles = StyleSheet.create({
     left: 25,
   },
   headerContainer: {
-    marginTop: 20,
+    marginTop: 50,
+    paddingHorizontal: 60,
+    paddingTop: "10%",
   },
   headerText: {
     fontFamily: "OutfitBold",
@@ -198,7 +205,7 @@ const styles = StyleSheet.create({
   formContainer: {
     borderRadius: 10,
     padding: 60,
-    marginTop: 150,
+    marginTop: 10,
   },
   inputContainer: {
     marginBottom: 10,
