@@ -25,3 +25,17 @@ export const fetchRecipe = async (
     throw { ...(error.response?.data || error.message) };
   }
 };
+
+export const searchRecipes = async (
+  ingredients: string[]
+): Promise<RecipePreviewResponse[]> => {
+  try {
+    let body = {
+      ingredients,
+    };
+    const response = await api.post("/recipes/search", body);
+    return response.data;
+  } catch (error: any) {
+    throw { ...(error.response?.data || error.message) };
+  }
+};
