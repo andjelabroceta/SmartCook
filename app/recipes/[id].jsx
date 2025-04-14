@@ -16,6 +16,7 @@ import { useLocalSearchParams } from "expo-router";
 import { Colors } from "@/constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { fetchRecipe } from "@/hooks/favoriteRecipes";
 
 export default function RecipeScreen() {
   const { id } = useLocalSearchParams();
@@ -26,15 +27,14 @@ export default function RecipeScreen() {
   const listRef = useRef(null);
 
   useEffect(() => {
-    fetchRecipe();
+    fetchRecipeById();
   }, []);
 
-  const fetchRecipe = async () => {
+  const fetchRecipeById = async () => {
     try {
-      const response = await axios.get(
-        `http://192.168.2.40:8000/api/v1/recipes/${id}`
-      );
-      setRecipe(response.data);
+      let data = await fetchRecipe(id);
+      setRecipe(data);
+      setIsFavourite(data.is_favorite);
     } catch (error) {
       console.error(
         "Error fetching recipe:",
@@ -64,7 +64,7 @@ export default function RecipeScreen() {
     );
   };
   const handleCloseButton = () => {
-    router.push("/recipes");
+    router.back();
   };
   const handleFavouriteButton = () => {
     //logic for adding favourite recipe
