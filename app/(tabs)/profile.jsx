@@ -4,24 +4,32 @@ import {
   TouchableOpacity,
   SafeAreaView,
   StyleSheet,
-  Image,
   FlatList,
   StatusBar,
+  Image,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Button } from "react-native-elements/dist/buttons/Button";
 import { getUser, logout } from "@/hooks/auth";
-import { router } from "expo-router";
+import { router, useFocusEffect, useNavigation } from "expo-router";
 import { NotifyMessage } from "@/utils/utils";
-import { Ionicons } from "@expo/vector-icons";
+import {
+  Ionicons,
+  MaterialCommunityIcons,
+  MaterialIcons,
+} from "@expo/vector-icons";
 import { FavoriteRecipeCard } from "@/components/custom/FavoriteRecipeCard";
 import { Colors } from "@/constants/Colors";
 import { findFavoriteRecipes } from "@/hooks/favoriteRecipes";
 import { RecipePreviewResponse } from "@/model/RecipePreviewResponse";
+import { Animated } from "react-native";
+import { useEmptyStateAnimations } from "@/components/custom/EmptyFavoritesAnimation";
+import { EmptyFavorites } from "@/components/custom/EmptyFavorites";
 
 const Profile = () => {
   const [favoriteRecipes, setFavoriteRecipes] = useState([]);
   const [isDropdownVisible, setDropdownVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const handleLogout = async () => {
     try {
@@ -52,17 +60,34 @@ const Profile = () => {
 
     fetchUser();
   }, []);
-  useEffect(() => {
-    const fetchFavRecipes = async () => {
-      try {
-        let favRecipes = await findFavoriteRecipes(user?.user.id);
-        setFavoriteRecipes(favRecipes);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchFavRecipes();
-  }, [user]);
+  useFocusEffect(
+    useCallback(() => {
+      let isActive = true;
+
+      const fetchFavRecipes = async () => {
+        if (!user?.user?.id) return;
+
+        setIsLoading(true);
+        try {
+          let favRecipes = await findFavoriteRecipes(user?.user.id);
+          if (isActive) {
+            setFavoriteRecipes(favRecipes);
+            setIsLoading(false);
+          }
+        } catch (error) {
+          console.log(error);
+          if (isActive) {
+            setIsLoading(false);
+          }
+        }
+      };
+      fetchFavRecipes();
+
+      return () => {
+        isActive = false;
+      };
+    }, [user])
+  );
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
@@ -79,13 +104,8 @@ const Profile = () => {
       </View>
       {isDropdownVisible && (
         <View style={styles.dropdown}>
-          <TouchableOpacity
-            onPress={() => console.log("Option 1")}
-            style={styles.dropdownItem}
-          >
-            <Text>Option 1</Text>
-          </TouchableOpacity>
           <TouchableOpacity onPress={handleLogout} style={styles.dropdownItem}>
+            <Ionicons name="log-out-outline" size={24} color="red" />
             <Text style={{ color: "red" }}>Logout</Text>
           </TouchableOpacity>
         </View>
@@ -119,22 +139,26 @@ const Profile = () => {
         </TouchableOpacity>
       </View>
       {/* Favorites Grid */}
-      <FlatList
-        data={favoriteRecipes}
-        renderItem={({ item }) => (
-          <FavoriteRecipeCard
-            title={item.name}
-            prepTime={item.times?.Preparation}
-            cookTime={item.times?.Cooking}
-            recipeImage={item.image}
-            recipeId={item.id}
-          />
-        )}
-        keyExtractor={(item) => item.id}
-        numColumns={2}
-        columnWrapperStyle={styles.recipeRow}
-        showsVerticalScrollIndicator={false}
-      />
+      {favoriteRecipes.length > 0 ? (
+        <FlatList
+          data={favoriteRecipes}
+          renderItem={({ item }) => (
+            <FavoriteRecipeCard
+              title={item.name}
+              prepTime={item.times?.Preparation}
+              cookTime={item.times?.Cooking}
+              recipeImage={item.image}
+              recipeId={item.id}
+            />
+          )}
+          keyExtractor={(item) => item.id}
+          numColumns={2}
+          columnWrapperStyle={styles.recipeRow}
+          showsVerticalScrollIndicator={false}
+        />
+      ) : (
+        <EmptyFavorites />
+      )}
     </SafeAreaView>
   );
 };
@@ -177,6 +201,9 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
   },
   dropdownItem: {
+    flexDirection: "row",
+    gap: 5,
+    alignItems: "center",
     padding: 10,
   },
   profileSection: {

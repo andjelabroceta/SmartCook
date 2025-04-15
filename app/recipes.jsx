@@ -22,7 +22,6 @@ const Recipes = (route) => {
   const params = useLocalSearchParams();
   const ingredients = params.ingredients ? JSON.parse(params.ingredients) : [];
   const ingredientsLower = ingredients.map((item) => item.toLowerCase());
-  console.log(ingredientsLower);
   const { width } = Dimensions.get("window");
   const [recipes, setRecipes] = useState([]);
   const router = useRouter();

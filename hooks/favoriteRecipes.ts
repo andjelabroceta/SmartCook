@@ -14,6 +14,35 @@ export const findFavoriteRecipes = async (
     throw { ...(error.response?.data || error.message) };
   }
 };
+export const addFavoriteRecipe = async (
+  userId: string,
+  recipeId: string
+): Promise<any> => {
+  try {
+    let body = {
+      user_id: userId,
+      recipe_id: recipeId,
+    };
+    const response = await api.post("/favorite-recipes", body);
+    return response.data;
+  } catch (error: any) {
+    throw { ...(error.response?.data || error.message) };
+  }
+};
+export const deleteFavoriteRecipe = async (
+  userId: string,
+  recipeId: string
+): Promise<void> => {
+  try {
+    let body = {
+      user_id: userId,
+      recipe_id: recipeId,
+    };
+    await api.delete("/favorite-recipes", { data: body });
+  } catch (error: any) {
+    throw { ...(error.response?.data || error.message) };
+  }
+};
 
 export const fetchRecipe = async (
   id: string
