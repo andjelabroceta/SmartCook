@@ -16,26 +16,24 @@ import { FlatList } from "react-native";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams } from "expo-router";
+import { searchRecipes } from "@/hooks/favoriteRecipes";
 
 const Recipes = (route) => {
   const params = useLocalSearchParams();
   const ingredients = params.ingredients ? JSON.parse(params.ingredients) : [];
   const ingredientsLower = ingredients.map((item) => item.toLowerCase());
-  console.log(ingredientsLower);
   const { width } = Dimensions.get("window");
   const [recipes, setRecipes] = useState([]);
   const router = useRouter();
-  const API_URL = "http://192.168.2.40:8000/api/v1/recipes/search";
+  // const API_URL = "http://192.168.2.40:8000/api/v1/recipes/search";
   useEffect(() => {
     fetchRecipes();
   }, []);
 
   const fetchRecipes = async () => {
     try {
-      const response = await axios.post(API_URL, {
-        ingredients: ingredientsLower,
-      });
-      setRecipes(response.data);
+      const response = await searchRecipes(ingredientsLower);
+      setRecipes(response);
     } catch (error) {
       console.error(
         "Error fetching recipes:",
@@ -119,6 +117,7 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     backgroundColor: "white",
+    paddingTop: "10%",
   },
   headerContainer: {
     //flex: 1,

@@ -6,19 +6,17 @@ import {
   SafeAreaView,
   ActivityIndicator,
   ImageBackground,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useNavigation, useRouter } from "expo-router";
 import { TouchableOpacity } from "react-native";
 import { Colors } from "../../../constants/Colors";
 import Ionicons from "@expo/vector-icons/Ionicons";
-// import {
-//   createUserWithEmailAndPassword,
-//   getRedirectResult,
-//   signInWithEmailAndPassword,
-//   signInWithRedirect,
-// } from "firebase/auth";
 import { NotifyMessage } from "../../../utils/utils";
+import { signIn } from "@/hooks/auth";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function SignIn() {
   const navigation = useNavigation();
@@ -32,43 +30,89 @@ export default function SignIn() {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [loading, setLoading] = useState();
+  const [errors, setErrors] = useState({
+    password: "",
+    email: "",
+  });
+
+  const validatePassword = (val) => {
+    setPassword(val);
+    let errorMessage = "";
+    if (!val) {
+      errorMessage = "Password is required!";
+    } else if (val.length < 6) {
+      errorMessage = "Password must be at least 6 characters!";
+    }
+    setErrors((prev) => ({ ...prev, password: errorMessage }));
+    return errorMessage;
+  };
+  const validateEmail = (val) => {
+    setEmail(val);
+    let errorMessage = "";
+    if (!val) {
+      errorMessage = "Email is required!";
+    } else if (
+      !String(val)
+        .toLowerCase()
+        .match(
+          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        )
+    ) {
+      errorMessage = "Email is invalid!";
+    }
+    setErrors((prev) => ({ ...prev, email: errorMessage }));
+    return errorMessage;
+  };
 
   //   const auth = FIREBASE_AUTH;
 
   const OnCreateAccount = () => {
-    //     if (!email || !password) {
-    //       NotifyMessage("Please fill all the fields!");
-    //       return;
-    //     }
-    //     setLoading(true);
-    //     signInWithEmailAndPassword(auth, email, password)
-    //       .then((userCredential) => {
-    //         const user = userCredential.user;
-    router.replace("/home");
-    //       })
-    //       .catch((error) => {
-    //         NotifyMessage("Error: " + error.code);
-    //       })
-    //       .finally(() => {
-    //         setLoading(false);
-    //       });
+    let emailError = validateEmail(email);
+    let passError = validatePassword(password);
+    if (emailError || passError) {
+      NotifyMessage("Please fill all the fields!");
+      return;
+    }
+    setLoading(true);
+    signIn(email, password)
+      .then(async (response) => {
+        NotifyMessage("Success: " + response.message);
+        await AsyncStorage.setItem(
+          "auth",
+          JSON.stringify({
+            access_token: response.access_token,
+            refresh_token: response.refresh_token,
+            user: response.user,
+          })
+        );
+        router.replace("/home");
+      })
+      .catch((error) => {
+        // console.log(error);
+        NotifyMessage("Error: " + error.message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   return (
+    // <KeyboardAvoidingView
+    //   behavior={Platform.OS === "ios" ? "padding" : "height"}
+    //   style={{ flex: 1 }}
+    // >
     <SafeAreaView style={styles.container}>
       <ImageBackground
         source={require("../../../assets/images/pancakes.jpeg")}
         resizeMode="cover"
         style={styles.imageContainer}
       >
-        <TouchableOpacity onPress={() => router.back()}>
-          <Ionicons name="arrow-back" size={24} color="#720058" />
-        </TouchableOpacity>
-
         <View style={styles.headerContainer}>
+          <TouchableOpacity onPress={() => router.back()}>
+            <Ionicons name="arrow-back" size={24} color="#720058" />
+          </TouchableOpacity>
           <Text style={styles.headerText}>Let's Sign You In</Text>
           <Text style={styles.subHeaderText}>Welcome Back</Text>
-          <Text style={styles.subHeaderText}>You've been missed</Text>
         </View>
 
         <View style={styles.formContainer}>
@@ -80,8 +124,11 @@ export default function SignIn() {
               placeholderTextColor="#a0a0a0"
               keyboardType="email-address"
               autoCapitalize="none"
-              onChangeText={(val) => setEmail(val)}
+              onChangeText={(val) => validateEmail(val)}
             />
+            {errors.email && (
+              <Text style={styles.errorText}>{errors.email}</Text>
+            )}
           </View>
 
           <View style={styles.inputContainer}>
@@ -91,8 +138,11 @@ export default function SignIn() {
               style={styles.input}
               placeholder="Enter Password"
               placeholderTextColor="#a0a0a0"
-              onChangeText={(val) => setPassword(val)}
+              onChangeText={(val) => validatePassword(val)}
             />
+            {errors.password && (
+              <Text style={styles.errorText}>{errors.password}</Text>
+            )}
           </View>
 
           {loading ? (
@@ -115,6 +165,7 @@ export default function SignIn() {
         </View>
       </ImageBackground>
     </SafeAreaView>
+    // </KeyboardAvoidingView>
   );
 }
 
@@ -132,7 +183,9 @@ const styles = StyleSheet.create({
     left: 25,
   },
   headerContainer: {
-    marginTop: 20,
+    marginTop: 50,
+    paddingHorizontal: 60,
+    paddingTop: "10%",
   },
   headerText: {
     fontFamily: "OutfitBold",
@@ -152,7 +205,7 @@ const styles = StyleSheet.create({
   formContainer: {
     borderRadius: 10,
     padding: 60,
-    marginTop: 150,
+    marginTop: 10,
   },
   inputContainer: {
     marginBottom: 10,
@@ -170,6 +223,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.PURPLE,
     borderWidth: 1,
     backgroundColor: "white",
+    zIndex: 10,
   },
   signInButton: {
     backgroundColor: Colors.YELLOW,
@@ -194,5 +248,20 @@ const styles = StyleSheet.create({
     fontFamily: "Outfit",
     fontSize: 18,
     color: Colors.YELLOW,
+  },
+  errorText: {
+    borderColor: Colors.PURPLE,
+    borderWidth: 1,
+    borderTopWidth: 0,
+    padding: 2,
+    fontSize: 13,
+    paddingTop: 20,
+    marginTop: -20,
+    zIndex: 1,
+    color: "#990000",
+    backgroundColor: "white",
+    borderBottomLeftRadius: 15,
+    borderBottomRightRadius: 15,
+    paddingStart: 10,
   },
 });

@@ -16,6 +16,12 @@ import { useLocalSearchParams } from "expo-router";
 import { Colors } from "@/constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import {
+  addFavoriteRecipe,
+  deleteFavoriteRecipe,
+  fetchRecipe,
+} from "@/hooks/favoriteRecipes";
+import { getUser } from "@/hooks/auth";
 
 export default function RecipeScreen() {
   const { id } = useLocalSearchParams();
@@ -24,17 +30,30 @@ export default function RecipeScreen() {
   const router = useRouter();
   const [isFavourite, setIsFavourite] = useState(false);
   const listRef = useRef(null);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    fetchRecipe();
+    fetchUser();
   }, []);
 
-  const fetchRecipe = async () => {
+  useEffect(() => {
+    fetchRecipeById();
+  }, []);
+
+  const fetchUser = async () => {
     try {
-      const response = await axios.get(
-        `http://192.168.2.40:8000/api/v1/recipes/${id}`
-      );
-      setRecipe(response.data);
+      let userData = await getUser();
+      setUser(userData);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchRecipeById = async () => {
+    try {
+      let data = await fetchRecipe(id);
+      setRecipe(data);
+      setIsFavourite(data.is_favorite);
     } catch (error) {
       console.error(
         "Error fetching recipe:",
@@ -64,11 +83,19 @@ export default function RecipeScreen() {
     );
   };
   const handleCloseButton = () => {
-    router.push("/recipes");
+    router.back();
   };
-  const handleFavouriteButton = () => {
-    //logic for adding favourite recipe
-    setIsFavourite(!isFavourite);
+  const handleFavouriteButton = async () => {
+    try {
+      if (isFavourite) {
+        await deleteFavoriteRecipe(user.user.id, recipe.id);
+      } else {
+        await addFavoriteRecipe(user.user.id, recipe.id);
+      }
+      setIsFavourite(!isFavourite);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleTabChange = (tab) => {
@@ -81,131 +108,6 @@ export default function RecipeScreen() {
     }, 100);
   };
   return (
-    // <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
-    //   <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-    //     <View style={{ flex: 1 }}>
-    //       {recipe ? ( //if recipe exists
-    //         <View style={styles.container}>
-    //           <View style={styles.imageContainer}>
-    //             <Image
-    //               source={{ uri: recipe.image }}
-    //               style={styles.image}
-    //               resizeMode="cover"
-    //             />
-    //             <LinearGradient
-    //               colors={[
-    //                 "rgba(255, 255, 255, 0.8)",
-    //                 "rgba(255, 255, 255, 0)",
-    //               ]}
-    //               style={styles.gradientOverlay}
-    //             />
-    //           </View>
-    //           <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-    //             <View style={styles.mainContainer}>
-    //               <View style={styles.headerContainer}>
-    //                 <Text style={styles.headerText}>{recipe.name}</Text>
-    //                 <View style={styles.iconComponent}>
-    //                   <Text style={styles.iconText}>
-    //                     {" "}
-    //                     {recipe.times.Preparation}
-    //                   </Text>
-    //                   <Ionicons
-    //                     name="time-outline"
-    //                     size={18}
-    //                     color={Colors.YELLOW}
-    //                   />
-    //                 </View>
-    //                 <View style={styles.iconComponent}>
-    //                   <Ionicons
-    //                     name="star-outline"
-    //                     size={18}
-    //                     color={Colors.YELLOW}
-    //                   />
-    //                   <Text style={styles.iconText}> {recipe.rattings}</Text>
-    //                 </View>
-    //               </View>
-    //               <View style={styles.descriptionContainer}>
-    //                 <Text style={styles.description}>
-    //                   {" "}
-    //                   {recipe.description}
-    //                 </Text>
-    //               </View>
-    //               {recipe.nutrients &&
-    //                 Object.keys(recipe.nutrients).length > 0 && ( //if nutrients dictionary is not empty
-    //                   <View style={styles.nutrientsContainer}>
-    //                     <Text style={styles.sectionTitle}>Nutrients</Text>
-    //                     {Object.entries(recipe.nutrients).map(
-    //                       ([key, value]) => (
-    //                         <View key={key} style={styles.nutrientRow}>
-    //                           <Text style={styles.nutrientKey}>{key}:</Text>
-    //                           <Text style={styles.nutrientValue}>{value}</Text>
-    //                         </View>
-    //                       )
-    //                     )}
-    //                   </View>
-    //                 )}
-    //               <View style={styles.buttonContainer}>
-    //                 <Pressable
-    //                   style={[
-    //                     styles.button,
-    //                     activeTab === "ingredients" && styles.activeButton,
-    //                   ]}
-    //                   onPress={() => setActiveTab("ingredients")}
-    //                 >
-    //                   <Text
-    //                     style={[
-    //                       styles.buttonText,
-    //                       activeTab === "ingredients" &&
-    //                         styles.activeButtonText,
-    //                     ]}
-    //                   >
-    //                     Ingredients
-    //                   </Text>
-    //                 </Pressable>
-    //                 <Pressable
-    //                   style={[
-    //                     styles.button,
-    //                     activeTab === "instructions" && styles.activeButton,
-    //                   ]}
-    //                   onPress={() => setActiveTab("instructions")}
-    //                 >
-    //                   <Text
-    //                     style={[
-    //                       styles.buttonText,
-    //                       activeTab === "instructions" &&
-    //                         styles.activeButtonText,
-    //                     ]}
-    //                   >
-    //                     Instructions
-    //                   </Text>
-    //                 </Pressable>
-    //               </View>
-    //               <FlatList
-    //                 data={
-    //                   activeTab === "ingredients"
-    //                     ? recipe.ingredients
-    //                     : recipe.steps
-    //                 }
-    //                 renderItem={
-    //                   activeTab === "ingredients"
-    //                     ? renderIngredients
-    //                     : renderInstructions
-    //                 }
-    //                 keyExtractor={(item, index) => index.toString()}
-    //                 nestedScrollEnabled={true}
-    //                 contentContainerStyle={{ paddingBottom: 20 }} // Da lista ne ide do ivice
-    //                 style={{ flex: 1 }}
-    //               />
-    //             </View>
-    //           </ScrollView>
-    //         </View>
-    //       ) : (
-    //         <Text>Loading...</Text> //if recipe doesnt exists
-    //       )}
-    //     </View>
-    //   </ScrollView>
-    // </KeyboardAvoidingView>
-
     <SafeAreaView style={styles.parentContainer}>
       {recipe ? (
         <FlatList

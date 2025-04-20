@@ -36,7 +36,7 @@ export default function TabLayout() {
           ),
         }}
       />
-      <Tabs.Screen
+      {/* <Tabs.Screen
         name="calendar"
         options={{
           title: "",
@@ -53,7 +53,7 @@ export default function TabLayout() {
             <Ionicons size={28} name="notifications-outline" color={color} />
           ),
         }}
-      />
+      /> */}
       <Tabs.Screen
         name="profile"
         options={{
