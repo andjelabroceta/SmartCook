@@ -9,14 +9,13 @@ import {
   Pressable,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import RecipeCard from "@/components/custom/RecipeCard";
 import { Colors } from "@/constants/Colors";
-import axios from "axios";
 import { FlatList } from "react-native";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams } from "expo-router";
 import { searchRecipes } from "@/hooks/favoriteRecipes";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Recipes = (route) => {
   const params = useLocalSearchParams();
@@ -39,6 +38,13 @@ const Recipes = (route) => {
         "Error fetching recipes:",
         error.response?.data || error.message
       );
+      // console.log("aaa", error.message == "Token is invalid Or expired");
+      if (error.message == "Token is invalid Or expired") {
+        console.log("Ovdje sam");
+        await AsyncStorage.removeItem("auth");
+        router.replace("/");
+        console.log("adka;lfdkjasdlk;jdsakL");
+      }
     }
   };
 
